@@ -8,7 +8,7 @@ public class Menu {
 
     @Id // PK
     @Column(name = "menu_code") // 실제 테이블 컬럼명
-//    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키 값을 db 에서 설정하도록
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키 값을 db 에서 설정하도록
     private int menuCode;
 
     @Column(name = "menu_name")
