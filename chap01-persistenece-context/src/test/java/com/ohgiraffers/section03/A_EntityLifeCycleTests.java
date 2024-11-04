@@ -75,7 +75,7 @@ public class A_EntityLifeCycleTests {
     void 영속성_객체_추가_테스트() {
 
         Menu menuToRegist = new Menu();
-        menuToRegist.setMenuCode(500);
+        menuToRegist.setMenuCode(500); // Menu 의 @GeneratedValue(strategy = GenerationType.IDENTITY) 주석처리
         menuToRegist.setMenuName("수박죽");
         menuToRegist.setMenuPrice(10000);
         menuToRegist.setCategoryCode(1);
@@ -85,5 +85,24 @@ public class A_EntityLifeCycleTests {
         Menu foundMenu = entityManager.find(Menu.class, 500);
 
         Assertions.assertTrue(foundMenu == menuToRegist);
+    }
+
+
+    @Test
+    void 준영속_detach_테스트() {
+
+        Menu foundMenu = entityManager.find(Menu.class, 11);
+        Menu foundMenu1 = entityManager.find(Menu.class, 12);
+
+        /*
+        * 영속성 컨텍스트가 관리하던 엔티티 객체가 더 이상 관리되지 않는 상태
+        * 로 전환되면(detach), 해당 객체는 준영속 상태로 바뀐다.
+        * 이는 JPA 객체의 변경 사항이 데이터베이스에 자동 반영되지 않는 상태
+        *
+        * Detach 메소드를 사용하면 특정 엔티티를 준영속 상태로 만들 수 있다.
+        * 즉, 원하는 객체만 선택적으로 영속성 컨텍스트에서 분리할 수 있다.
+        * */
+
+
     }
 }
