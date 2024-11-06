@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.2">
     <persistence-unit name="jpatest">
-        <class>com.ohgiraffers.section01.entity.Member</class>
+        <!--<class>com.ohgiraffers.section01.entity.Member</class>
+        <class>com.ohgiraffers.section02.column.Member</class>
+        <class>com.ohgiraffers.section03.primarykey.Member</class>-->
+        <!--<class>com.ohgiraffers.section04.enumType.Member</class>-->
+        <!--<class>com.ohgiraffers.section05.access.subsection01.Member</class>-->
+        <!--<class>com.ohgiraffers.section05.access.subsection02.Member</class>-->
+<!--        <class>com.ohgiraffers.section06.compositekey.subsection01.embedded.Member</class>-->
+        <class>com.ohgiraffers.section06.compositekey.subsection02.idclass.Member</class>
         
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>

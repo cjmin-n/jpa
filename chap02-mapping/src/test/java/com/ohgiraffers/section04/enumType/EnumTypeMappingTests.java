@@ -1,4 +1,5 @@
-package com.ohgiraffers.section02.column;
+package com.ohgiraffers.section04.enumType;
+
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -6,7 +7,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.*;
 
-public class ColumnMappingTests {
+public class EnumTypeMappingTests {
 
     private static EntityManagerFactory entityManagerFactory;
     private static EntityManager entityManager;
@@ -31,18 +32,15 @@ public class ColumnMappingTests {
         entityManagerFactory.close();
     }
 
-
     @Test
-    void 컬럼에서_사용하는_속성() {
+    void enum타입_매핑_테스트() {
 
         Member member = new Member();
         member.setMemberNo(1);
         member.setMemberId("user01");
         member.setMemberPwd("pass01");
         member.setNickName("홍길동");
-        member.setPhone("010-1234-5678");
-        member.setEmail("hong@gmail.com");
-        member.setAddress("서울시 서초구");
+        member.setMemberRole(RoleType.ADMIN);
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
@@ -51,6 +49,7 @@ public class ColumnMappingTests {
         entityTransaction.commit();
 
         Member foundMember = entityManager.find(Member.class, member.getMemberNo());
-        Assertions.assertEquals(member.getMemberNo(), foundMember.getMemberNo());
+        Assertions.assertEquals(member.getMemberId(), foundMember.getMemberId());
+
     }
 }

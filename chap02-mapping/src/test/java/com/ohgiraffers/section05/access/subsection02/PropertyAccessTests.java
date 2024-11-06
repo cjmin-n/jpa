@@ -1,4 +1,4 @@
-package com.ohgiraffers.section02.column;
+package com.ohgiraffers.section05.access.subsection02;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -6,7 +6,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import org.junit.jupiter.api.*;
 
-public class ColumnMappingTests {
+public class PropertyAccessTests {
 
     private static EntityManagerFactory entityManagerFactory;
     private static EntityManager entityManager;
@@ -32,25 +32,24 @@ public class ColumnMappingTests {
     }
 
 
-    @Test
-    void 컬럼에서_사용하는_속성() {
 
+    @Test
+    void 프로퍼티_접근_테스트() {
         Member member = new Member();
         member.setMemberNo(1);
         member.setMemberId("user01");
         member.setMemberPwd("pass01");
         member.setNickName("홍길동");
-        member.setPhone("010-1234-5678");
-        member.setEmail("hong@gmail.com");
-        member.setAddress("서울시 서초구");
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.begin();
-
         entityManager.persist(member);
         entityTransaction.commit();
 
-        Member foundMember = entityManager.find(Member.class, member.getMemberNo());
-        Assertions.assertEquals(member.getMemberNo(), foundMember.getMemberNo());
+        String jpql = "SELECT memberId FROM member_section05_subsection02 WHERE memberNo = 1";
+        String registeId = entityManager.createQuery(jpql, String.class).getSingleResult();
+
+        System.out.println(registeId);
+        Assertions.assertEquals("user01", registeId);
     }
 }
