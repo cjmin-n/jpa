@@ -1,13 +1,16 @@
-package com.ohgiraffers.section01.manytoone;
+package com.ohgiraffers.section02.oneToMany;
 
 import jakarta.persistence.*;
 
-@Entity(name = "category_section01")
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity(name = "category_section02")
 @Table(name = "tbl_category")
-public class Category {
+public class CategoryAndMenu {
 
     @Id
-    @Column(name = "category_code")
+    @Column (name = "category_code")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int categoryCode;
 
@@ -15,14 +18,15 @@ public class Category {
     private String categoryName;
 
     @Column(name = "ref_category_code")
-    private Integer refCategoryCode; // 래핑클래스는 null 이 가능하다.
+    private Integer refCategoryCode;
 
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "categoryCode")
+    private List<Menu> menuList = new ArrayList<>();
 
-
-    public Category() {
+    public CategoryAndMenu() {
     }
 
-    public Category(int categoryCode, String categoryName, Integer refCategoryCode) {
+    public CategoryAndMenu(int categoryCode, String categoryName, Integer refCategoryCode) {
         this.categoryCode = categoryCode;
         this.categoryName = categoryName;
         this.refCategoryCode = refCategoryCode;
@@ -52,12 +56,21 @@ public class Category {
         this.refCategoryCode = refCategoryCode;
     }
 
+    public List<Menu> getMenuList() {
+        return menuList;
+    }
+
+    public void setMenuList(List<Menu> menuList) {
+        this.menuList = menuList;
+    }
+
     @Override
     public String toString() {
-        return "Category{" +
+        return "CategoryAndMenu{" +
                 "categoryCode=" + categoryCode +
                 ", categoryName='" + categoryName + '\'' +
                 ", refCategoryCode=" + refCategoryCode +
+                ", menuList=" + menuList +
                 '}';
     }
 }

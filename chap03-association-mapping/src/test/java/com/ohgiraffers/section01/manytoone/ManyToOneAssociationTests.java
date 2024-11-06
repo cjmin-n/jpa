@@ -132,6 +132,51 @@ public class ManyToOneAssociationTests {
 
 
     @Test
-    void name() {
+    void Merge_Insert_테스트() {
+
+        MenuAndCategory menuAndCategory = new MenuAndCategory();
+        menuAndCategory.setMenuPrice(15000);
+        menuAndCategory.setMenuName("merge insert 메뉴");
+        menuAndCategory.setOrderableStatus("Y");
+        Category category = new Category();
+        category.setCategoryName("merge카테고리");
+
+        menuAndCategory.setCategory(category);
+
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+        MenuAndCategory mergeMenu = entityManager.merge(menuAndCategory); // 머지는 없으면 등록하고, 있으면 수정해준다.
+
+        entityTransaction.commit();
+
+        System.out.println(mergeMenu);
+
+    }
+
+
+    @Test
+    void detach_테스트(){
+        /*
+        * Detach 의 경우 해당 엔티티를 영속성 컨텍스트에서 관리하지 않겠다고 하는 것이다.
+        * (준영속화)
+        * 그러나 해당 관계를 맺고 있는 엔티티의 수정이 생기는 경우 해당 엔티티는 관리 중이기
+        * 때문에 함께 관계를 가지고 간다.
+        * 이러한 문제를 해결하기 위해 CascadeType 을 DETACH 로 설정하면
+        * 관계 요소도 함께 영속성에서 관리하지 않겠다는 것이다.
+        * */
+
+        MenuAndCategory menuAndCategory = entityManager.find(MenuAndCategory.class, 9999);
+        menuAndCategory.setMenuName("변경함");
+        Category category = menuAndCategory.getCategory();
+        category.setCategoryName("진짜 안바뀜?");
+        menuAndCategory.setCategory(category);
+
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityTransaction.begin();
+        entityManager.detach(menuAndCategory);
+        entityTransaction.commit();
+        
+        Category category1 = entityManager.find(Category.class, 3333);
+        System.out.println("category1 = " + category1);
     }
 }

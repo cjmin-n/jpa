@@ -28,6 +28,7 @@ public class MenuAndCategory {
 
     @Id
     @Column(name = "menu_code")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int menuCode;
 
     @Column(name = "menu_name")
@@ -41,11 +42,13 @@ public class MenuAndCategory {
     * - PERSIST : 자식의 값이 저장될 때 연관관계를 가지고 있는 부모의 값도 함께 저장됨.
     * - REMOVE : 엔티티를 제거할 때 연관된 엔티티도 모두 제거한다. 참조하고 있는 자식이 여러개 있으면 지워지지 않는다.
     * - MERGE : 엔티티 상태를 병합할 때 연관된 하위 엔티티도 모두 병합한다.
+    * - DETACH : 엔티티를 Detach() 하면 연관 엔티티도 detach 상태가 된다.
     * */
     @JoinColumn(name = "category_code")
-//    @ManyToOne(cascade = CascadeType.PERSIST)
-//    @ManyToOne(cascade = CascadeType.REMOVE)
-    @ManyToOne(cascade = CascadeType.MERGE)
+    // @ManyToOne(cascade = CascadeType.PERSIST)
+    // @ManyToOne(cascade = CascadeType.REMOVE)
+    // @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.DETACH)
     private Category category;
 
     @Column(name = "orderable_status")
