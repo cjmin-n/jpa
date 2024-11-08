@@ -3,7 +3,6 @@ package com.ohgiraffers.section05.groupfunction;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import org.hibernate.boot.model.source.spi.AssociationSource;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
