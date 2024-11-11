@@ -57,4 +57,41 @@ public class CategoryService {
         * */
         return result;
     }
+
+    public Category updateCategory(Category categoryDTO) {
+
+        Category foundCategory = categoryRepository.findByCategoryCode(categoryDTO.getCategoryCode());
+        if(Objects.isNull(foundCategory)){
+           return null;
+        }
+
+        foundCategory.setCategoryName(categoryDTO.getCategoryName());
+        Category result = categoryRepository.save(foundCategory);
+        return result;
+    }
+
+    public boolean deleteCategory(Integer categoryCode) {
+
+        Category category = categoryRepository.findById(categoryCode).orElse(null);
+        // findById 는 jpa 기본 제공 메소드
+        // 아이디가 없는 값일 수 있기 때문에 대체까지 해야한다.
+        // 없으면 null 값을 설정.
+
+        if(category == null){
+            return false;
+        }
+        categoryRepository.delete(category); // delete 는 반환 타입이 void 여서 존재하지 않으면 바로 에러난다.
+        return true;
+    }
+
+    public Integer findByCategory(int code) {
+
+        Category category = categoryRepository.findByCategoryCode(code);
+
+        if(Objects.isNull(category)){
+            return null;
+        }
+
+        return category.getCategoryCode();
+    }
 }

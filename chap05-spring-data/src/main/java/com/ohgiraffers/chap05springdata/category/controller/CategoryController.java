@@ -76,4 +76,45 @@ public class CategoryController {
     }
 
 
+    @PostMapping("/update")
+    public ResponseEntity<Object> updateCategory(@RequestBody HashMap<String, Object> category){
+
+        if(Objects.isNull(category)){
+            return ResponseEntity.status(404).body("카테고리 코드, 카테고리 이름을 입력해주세요.");
+        }
+
+        Category categoryDTO = new Category();
+        categoryDTO.setCategoryCode((Integer) category.get("categoryCode"));
+        categoryDTO.setCategoryName((String) category.get("categoryName"));
+
+        Category result = categoryService.updateCategory(categoryDTO);
+
+        if(Objects.isNull(result)){
+            return ResponseEntity.status(500).body("서버 측에서 오류 발생");
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+
+
+    // 카테고리 삭제
+    @PostMapping("/delete")
+    public ResponseEntity<Object> deleteCategory(@RequestBody HashMap<String, Integer> requestData){
+
+        Integer categoryCode = requestData.get("categoryCode");
+        if(categoryCode == null){
+            return ResponseEntity.status(404).body("카테고리 코드를 입력하세요");
+        }
+
+        boolean isDeleted = categoryService.deleteCategory(categoryCode);
+
+        if(!isDeleted){
+            return ResponseEntity.status(500).body("해당 카테고리를 찾을 수 없습니다.");
+        }
+
+        return ResponseEntity.ok("성공적으로 삭제되었습니다.");
+    }
+
+
 }
