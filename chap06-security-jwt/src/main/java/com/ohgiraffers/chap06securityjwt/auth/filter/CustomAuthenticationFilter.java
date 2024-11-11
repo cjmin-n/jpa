@@ -50,4 +50,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         return new UsernamePasswordAuthenticationToken(user.getId(), user.getPass());
     }
+
+
 }

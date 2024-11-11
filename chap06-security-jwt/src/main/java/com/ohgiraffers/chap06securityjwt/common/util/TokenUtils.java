@@ -73,7 +73,7 @@ public class TokenUtils {
      * @Param token
      * @return Claims
      * */
-    private static Claims getClaimsFromToken(String token) {
+    public static Claims getClaimsFromToken(String token) {
         // jwt.parser 와 parseClaimsJws 를 이용해 JWT 의 유효성을 검증한다.
         // 만약 JWT 가 유효하지 않으면 예외가 발생한다. (예외발생 시 isValidToken() 이 false 반환)
 
@@ -88,7 +88,7 @@ public class TokenUtils {
      * @param user userEntity
      * @return String token
      * */
-    private static String generateJwtToken(User user){
+    public static String generateJwtToken(User user){
         // 토큰 만료 시간을 현재 시간에서 지정된 유효 시간 이후로 설정
         Date expireTime = new Date((System.currentTimeMillis() + tokenValidateTime));
         // JwtBuilder 를 사용해 JWT 토큰을 생성하는 객체 초기화

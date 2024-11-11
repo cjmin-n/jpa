@@ -1,6 +1,9 @@
 package com.ohgiraffers.chap06securityjwt.auth.config;
 
 import com.ohgiraffers.chap06securityjwt.auth.filter.CustomAuthenticationFilter;
+import com.ohgiraffers.chap06securityjwt.auth.filter.JwtAuthorizationFilter;
+import com.ohgiraffers.chap06securityjwt.auth.handler.CustomAuthFailureHandler;
+import com.ohgiraffers.chap06securityjwt.auth.handler.CustomAuthSuccessHandler;
 import com.ohgiraffers.chap06securityjwt.auth.handler.CustomAuthenticationProvider;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -8,14 +11,19 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) // 특정 컨트롤러 단으로 설정 (컨트롤러에서 특정권한 있는지 확인) // Deprecated
-public class WebSecurityConfig implements {
+public class WebSecurityConfig {
     // 한군데에 모아서 Bean 으로 등록
     // 용이하게 관리하기 위해
 
@@ -65,12 +73,55 @@ public class WebSecurityConfig implements {
     @Bean
     public CustomAuthenticationFilter customAuthenticationFilter(){
         CustomAuthenticationFilter authenticationFilter = new CustomAuthenticationFilter(authenticationManager()); // authenticationManager() 가 검증 로직을 수행한다.
-
+        authenticationFilter.setFilterProcessesUrl("/login"); // 어떤 요청을 가로챌지
+        authenticationFilter.setAuthenticationSuccessHandler(customAuthSuccessHandler()); // 요청 성공 동작
+        authenticationFilter.setAuthenticationFailureHandler(customAuthFailureHandler()); // 요청 실패 동작
+        return authenticationFilter;
     }
 
+    /**
+     * 6. spring security 기반의 사용자의 정보가 맞을 경우 결과를 수행하는 handler
+     * */
+    @Bean
+    public CustomAuthSuccessHandler customAuthSuccessHandler(){
+        return new CustomAuthSuccessHandler();
+    }
 
     /**
-     *
+     * 7. spring security 기반의 사용자의 정보가 맞지 않을 경우 수행하는 handler
      * */
+    @Bean
+    public CustomAuthFailureHandler customAuthFailureHandler(){
+        return new CustomAuthFailureHandler();
+    }
+
+    /**
+     * 8. 사용자의 요청 시 수행되는 메소드
+     * */
+    public JwtAuthorizationFilter jwtAuthorizationFilter(){
+        return new JwtAuthorizationFilter(authenticationManager());
+    }
+
+    /**
+     * Security Filter Chain 설정
+     * */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        //csrf 보호 비활성화 -> 세션 기반 인증 시 가능한 공격. 토큰방식에서는 의미없음
+        http.csrf(csrf -> csrf.disable())
+            // JWT 토큰을 사용하는 경우 기본 HTTP 인증 대신 JWT 인증 필터를 사용하도록 지정
+            .addFilterBefore(jwtAuthorizationFilter(), BasicAuthenticationFilter.class)
+            // 세션을 유지하지 않도록 설정. 세션 관리 설정을 빼줌
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // 기본 제공 로그인 폼 비활성화
+            .formLogin(form -> form.disable())
+            // 기본 제공 UsernamePasswordAuthenticationFilter 대신 우리가 만든 것 쓰도록
+            .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+            // HTTP basic 인증(사용자 이름과 비밀번호를 기본 헤더로 보내는 방식) 비활성화
+            .httpBasic(basic->basic.disable());
+
+        return http.build();
+    }
+
 
 }
