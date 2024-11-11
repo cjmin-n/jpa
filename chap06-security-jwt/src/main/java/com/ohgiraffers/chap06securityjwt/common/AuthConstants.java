@@ -4,9 +4,9 @@ package com.ohgiraffers.chap06securityjwt.common;
 public class AuthConstants {
 
     // 일반적인 토큰의 규칙
-    private static final String AUTH_HEADER = "Authorization"; // 토큰의 헤더
+    public static final String AUTH_HEADER = "Authorization"; // 토큰의 헤더
 
-    private static final String TOKEN_TYPE = "BEARER"; // 토큰의 값의 시작 (인증유형)
+    public static final String TOKEN_TYPE = "BEARER"; // 토큰의 값의 시작 (인증유형)
 
     // Authorization : BEARER ajdlfjlksjdflkjsdf....
 
