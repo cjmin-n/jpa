@@ -30,7 +30,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         // 2. DB 에서 username 에 해당하는 정보 조회
         DetailsUser foundUser = (DetailsUser) detailsService.loadUserByUsername(username);
-        if(!passwordEncoder.matches(password, foundUser.getPassword())){
+        if(!passwordEncoder.matches(password, foundUser.getPassword())){ // 원본, 암호화
             throw new BadCredentialsException("password 가 일치하지 않습니다.");
         }
         return new UsernamePasswordAuthenticationToken(foundUser, password, foundUser.getAuthorities());
