@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/menu")
@@ -21,31 +23,60 @@ public class MenuController {
     private CategoryFindImpl categoryFindImpl;
 
     @GetMapping("/select")
-    public ResponseEntity<Object> selectAll(){
+    public ResponseEntity<Object> selectAll() {
 
         List<Menu> menulist = menuService.selectAll();
 
-        try{
-            if(menulist != null) {
+        try {
+            if (menulist != null) {
                 return ResponseEntity.ok(menulist);
-            }else {
+            } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("메뉴가 존재하지 않습니다.");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버에서 오류가 발생했습니다.");
         }
 
     }
 
     @PostMapping("insert")
-    public ResponseEntity<Object> insertMenu(@RequestBody MenuDTO menuDTO){
+    public ResponseEntity<Object> insertMenu(@RequestBody MenuDTO menuDTO) {
 
         Object result = menuService.insertMenu(menuDTO);
 
-        if(result instanceof Menu){
+        if (result instanceof Menu) {
             Menu response = (Menu) result;
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(404).body(result);
     }
+
+
+    @PostMapping("update")
+    public ResponseEntity<Object> updateMenu(@RequestBody Map<String, Object> menus) {
+
+
+        Object result = menuService.updateMenu(menus);
+        if (result instanceof Menu) {
+            Menu response = (Menu) result;
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(404).body(result);
+    }
+
+    @PostMapping("remove")
+    public ResponseEntity<Object> removeMenu(@RequestBody Map<String, Object> menus) {
+
+        System.out.println("menus = " + menus);
+
+        Object result = menuService.removeMenu(menus);
+        System.out.println("result = " + result);
+
+        if (!Objects.isNull(result)) {
+            return ResponseEntity.ok(result);
+        }
+
+        return ResponseEntity.status(404).body(result);
+    }
 }
+

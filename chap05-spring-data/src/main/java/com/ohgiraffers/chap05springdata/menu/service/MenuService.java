@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -58,5 +59,49 @@ public class MenuService {
         Menu result = menuRepository.save(newMenu);
 
         return result;
+    }
+
+
+    public Object updateMenu(Map<String, Object> menus) {
+
+        if(Objects.isNull(menus)){
+            return new String("업데이트할 메뉴가 없습니다.");
+        }
+
+        Integer menuCode = (Integer) menus.get("menuCode");
+        String menuName = (String) menus.get("menuName");
+        int menuPrice = (Integer) menus.get("menuPrice");
+        int categoryCode = (Integer) menus.get("categoryCode");
+        String orderableStatus = (String) menus.get("orderableStatus");
+
+        Menu menu = menuRepository.findByMenuCode(menuCode);
+
+        menu.setMenuName(menuName);
+        menu.setMenuPrice(menuPrice);
+        menu.setCategoryCode(categoryCode);
+        menu.setOrderableStatus(orderableStatus);
+
+        Menu result = menuRepository.save(menu);
+
+        return result;
+    }
+
+
+    public Object removeMenu(Map<String, Object> menus) {
+
+        Integer menuCode = (Integer) menus.get("menuCode");
+
+        if(menuCode == null){
+            return new String("삭제할 메뉴가 없습니다.");
+        }
+
+        Menu deleteMenu = menuRepository.findByMenuCode(menuCode);
+
+        if(Objects.isNull(deleteMenu)){
+            return new String("삭제할 메뉴가 없습니다.");
+        }
+
+        menuRepository.delete(deleteMenu);
+        return "delete 성공";
     }
 }
